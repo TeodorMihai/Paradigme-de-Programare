@@ -1,0 +1,4 @@
+#lang racket
+(define adunare (λ (x y) (+ x y) ) )
+
+(adunare 3 4)

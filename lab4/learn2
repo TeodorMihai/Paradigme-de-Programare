@@ -1,0 +1,86 @@
+#lang racket
+;;domeniul de vizibilitate determinat prin constructiile limbajului (lexical) la compilare (static)
+;; λ x. λ y(λ x . x y)
+;;legarea dinamica: ma raportez de momentuld e timp, am nevoied e runtime
+
+(let ( (x 1) (y 2) )
+  (+ x y) )
+
+( (λ(x y) (+ x y)) 1 2)
+
+;;x nu e vizibil in definitia lui y
+(let ( [x 2] [y 1] )
+  (+ x y) )
+
+(let ( [ x 1] )
+  (let ( [y x] )
+    (+ x y) ) )
+
+;;rescris cu lamba:
+( ( λ (x)
+   ( λ (y)
+      (+ x y) ) x ) 1 )
+
+;;problema vizibilitatii in definitii e rezolvata de let*, e vizibila doar dupa, nu si inainte aparitiei in prima definitie => letrec
+(let* ([x 1] [y x] ) (+ x y) )
+
+(letrec ([factorial ( λ (n)
+                       (if (zero? n)  1
+                                (* n (factorial (- n 1) ) ) ) ) ] ) 
+  (factorial 5) );; factorial de 5 e corupul functiei
+;;pentru evaluari imbricate, useless la directe
+
+(define x 0 )
+(define f ( λ () x ) );;se evalueaza defineul, rezulatul e o inchidere functiala, se evalueaza la ea insasi
+                      ;; expresia lambda in sine nu se evalueaza , ncii daca am fi avut λ() (+ 1 2), nu s-ar evaluea la 3
+                      ;; ci ar evalua (+ 1 2) de fiecare data cand e apelata functia
+ (f) ;; 1
+
+;de asta nu capra cand scriu
+(define g ( λ () a) )
+
+(define a 5)
+(g)
+
+(f) ;
+
+;( factorial2 ( λ (n)
+;                       (if (zero? n)  1
+;                                (* n (factorial2 (- n 1) ) ) ) )  5)
+
+;(define h factorial2)
+
+;(define factorial2 (λ (x) x ) )
+
+;(h 5)
+
+
+;;(define k (letrec ( [x ( λ () y) ] ( y x) ) x) )
+
+;;(k 5)
+
+;;inchideri functionale
+;;substituirea textuala e ineficienta, si crapa daa avem atriburiri
+
+;;(define (f x) ( set! x 5) ( g (x) ... ) )) , crapa
+
+;;perechea intre intre o expresie si un context se numeste inchidere
+
+;;(λx . x y)
+;;inchiderea functioanaka ( x (expresie) , (x <- y) (context )
+
+;;o expresie lambda se numeste inchisa daca nu are valori libere
+
+;;eficienta modelului: evaluez decat cand am nevoie, apare un plus de spatiu sa retin tot ce vreau, dar nu e problema de spatiu
+
+;;legarea dinamica: depinde de timp, adica se face cu defineuri, ne.o imaginam ca pe o stiva
+
+(define p 0)
+
+(define sum( λ (q) (+ q p ) ) ) ;;> rez evaluarii e o inchidere functioanla ( λ p ;(+ p q) ; pointer catre comtext global, in caz de variabile globale)
+
+
+;;cand veauez folosesc contextul local, dar in caz ca nu gasesc ma duc la parintele contextului care este contextul unde s.a creat inchiderea functionala sum
+
+;; pe y nu.l gasesc in context local, ci in cel global retinut in contextul global
+

@@ -1,0 +1,4 @@
+#lang racket
+;;domeniul de vizibilitate determinat prin constructiile limbajului (lexical) la compilare (static)
+;; λ x. λ y(λ x . x y)
+;;legarea dinamica: ma raportez de momentuld e timp, am nevoied e runtime

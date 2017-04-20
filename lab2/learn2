@@ -1,0 +1,25 @@
+cons( a  (cons b ( cons ..'()'))) => o lista
+cons intre un element si o lista => o lista
+
+in schimb (cons '() a) => (() . a) => de ce e diferit?, trebuie facut cu append
+cons nu merge decat intre un element si o lista. I aelementul si il pune la inceputul listei. Daca ii dau o lista
+si un element o sa ia lista si o sa o puna la inceputul elementul =? no sens
+
+(foldl ( λ(x acc) ...) initial_acc list) aplica functia definita de mine pe fiecare element din list, x e elementul din lista
+returnează rezultatul aplicării funcției f pe rând asupra unui element din listă și a unui acumulator. Ordinea folosirii elementelor din listă este de la stânga la dreapta. 
+Accumulatorul poate fi o lista, nu neaparat un element
+
+Cand ai de facut ceva cu fiecare linie a unei matrici, definesti o functie cu ce vrei s afaca pentru o linie si ii dai map pe matrice.
+Daca functia ta mai are nevoie de un element trebuie sa o faci curry si sa o apelezi cu argumentul respectiv, iar ce intoarce bagi ca functie in map
+
+(apply above lista), nu poti scrie doar (above lista) (abobe arg1 arg2 arg3) =>le suprapune  ( beside (reuneste imaginile date ca parametri pe orizontala))
+apply: returnează rezultatul aplicării unei funcții f(map list) cu argumente elementele din lista L (matrix) (apply f L)
+(apply map list matrix)
+
+map vs apply : map aplica pe fiecare element in parte, in timp ce apply aplica functia pe toate elementele listei deodata
+
+apply poate sa primeasca oricate argumente, el aplica functia pe toate, folosesti cand ai o functie care aplica pe mai multe argumente si vrei sa.i pasezi elementele ca argumente(nu poti sa.i dai lista ca argument)
+
+Cand folosesti recursivitatea pe stiva si cand pe coada?
+
+Pe stiva:

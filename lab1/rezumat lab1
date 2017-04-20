@@ -1,0 +1,60 @@
+ Expresia '(1 2 3 4) este echivalentă cu expresia (quote (1 2 3 4)), unde quote este o funcție unară care determină ca argumentul său să nu fie evaluat, să fie „citat“ ca atare. În consecință, putem defini ad-hoc lista (1 2 3 4) scriind '(1 2 3 4), dar apostroful nu poate substitui oricând funcția list, după cum se observă în exemplele de mai jos: 
+
+ (list 1 2 (+ 2 3)) ; se evaluează la lista (1 2 5)
+'(1 2 (+ 2 3)) ; se evaluează la lista (1 2 (+ 2 3))
+
+' <=> (quote())
+
+(cdr ( car '(1 2 3 4)) eroare, car nu intoarce o lista si un element
+
+lista vida: '()    ; fara apostraf da eroare, incerca sa evalueze o functie
+
+(null? '() )       ; null? e o functie, nu merge null ?
+
+(reverse '(1 (2 3) 4)) 		; (2 3) e un element, intoarce (4 (2 3) 1)
+
+(reverse '( 1 (2 3) 4) ) vs (reverse (list 1 (2 3) 4 ))		; de ce pirma merge si a doua nu? a doua incerca sa evalueze functia dar nu are ce . la fel
+															; (list 1 2 a) da eroare  dar '(1 2 a) nu
+
+(list? '())      ; intoarce t, verifica daca e o lista ca null?
+
+În urma define-urilor nu se suprascriu valori la anumite locații din memorie. 
+
+
+(define x 2)
+(define y (+ x 2)) 			; y e 4, se evalueaza in define
+(define my_list '(a 2 3)) 	; nu se evalueaza
+
+caddddd..ddr	=> nr de d-uri = x => al x + 1-lea element
+
+(define x 2)
+(define x 3)    merge sau nu merge?
+
+Functii anonime (lambda)
+
+O funcție anonimă se definește utilizând cuvântul cheie lambda. Sintaxa este: (lambda (arg1 arg2 …) ce_întoarce_funcția). 
+
+definire: (define patrat (lambda (x) (* x x)))
+ 
+aplicare: (patrat 3)
+
+Practic cream o functie si apoi putems a o aplicam cu aceeasi sintaxa
+
+
+ (modulo 5 2)			; restul
+
+ (quotient 5 2)			; impartire intreaga
+ 
+ (/ 5 2)				; impartire(da cu fractii)
+
+(equal? '(1 2) '(1 2))		    ; #t, verifică egalitatea între valori
+(eq? '(1 2 3) '(1 2 3)) 		; #f, asemănător cu "==" din Java, verifică dacă două obiecte referă aceeași zonă de memorie equal <=> equals
+
+( cons '(1 2) '(3 4)) => (' (1 3) 3 4)
+(append lista (list element)) => (1 2 3 4 5) face din tot lista
+( list (cons x y) ) => ((x y)), lista cu elementul (x y)
+
+(define (fun x) 
+	(if (=x 0)
+	'()
+	(append (fun (cdr x) )  (if prop (baga element) '())

@@ -1,0 +1,70 @@
+#lang racket
+(define add-curry
+  (lambda (x)
+    (lambda (y)
+      (+ x y))))
+
+;( (add-curry 4)  5)
+
+; (add-curry 4) returneaza o functie care asteapta un parametru y = 5; x = 4
+
+(define inc-curry (add-curry 1) )
+
+;(inc-curry 4)
+
+(define (sq x) (* x x) )
+(define (cub x) (* x x x) ) 
+
+;(cub 3)
+
+(define (sq-every L)
+  (if (null? L)
+      '()
+      (cons (sq (car L) ) (sq-every (cdr L)) ) ) )
+
+;(sq-every '(1 2 3 4 5) )
+
+(define (cube-every L)
+  (if (null? L)
+      '()
+      (cons (cub (car L) ) (cube-every (cdr L) ) ) ) )
+
+;(cube-every '(1 2 3 4 5) )
+
+;; se foloseste acelasi pattern
+
+(define (general-func f L) ; functia f aplicata tuturor membrilor lui L
+  (if (null? L)
+      '()
+      (cons (f (car L) ) (general-func f (cdr L) ) ) )
+  )
+
+(define (sq-e L) (general-func sq L) )
+
+;(sq-e '( 1 2 3 4) )
+
+;sau ca functii annime
+
+(define (sq-e2 L) (general-func ( lambda(x) (* x x) ) L ) )
+
+;(sq-e2 '(1 2 3 4 5 6) )
+
+(define (add2 L) (general-func  ( lambda(x) (+ 2 x) ) L ) )
+
+;(add2 '(1 2 3 4 5 6) )
+
+(define (add3 L) (general-func ( add-curry 3 ) L ) )    ; add-curry trebuie sa fie curry ca sa returneze o functie
+
+;(add3 '(1 2 3 4 5 6) )
+
+;(map (lambda(x) (* x x) ) '(1 2 3 4 5) )
+  
+      
+;(filter odd? '(1 2 3 4 5 6 7))
+
+(foldl + 0 '(8 9 10))
+
+(foldr (lambda(x y) (* x y) ) 1 '(2 3 4) )
+
+(map list '(1 2 3) '(4 5 6) )
+(apply map + '((1 2) (10 15))) ;aplica map pe fiecare lista

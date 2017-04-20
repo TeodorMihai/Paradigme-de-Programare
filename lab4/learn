@@ -1,0 +1,10 @@
+definire functii:
+
+#lang racket
+(define adunare (λ (x y) (+ x y) ) )
+(adunare 3 4)
+
+syntactic sugar:
+
+(define (adunare2 x y) (+ x y) ) 
+(adunare2 2 3)

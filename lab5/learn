@@ -1,0 +1,95 @@
+#lang racket
+;;intarzierea evaluarii
+
+;;Haskell foloseste by default acest stil de evaluare, diferit de maj limbajului
+
+;( (delay (+ 1 2) ) )
+
+;;toate functiile folsoite sunt implicit strict -> isi evalueaza parametrii in momentul aplicarii
+
+;(define-syntax-rule (pack expr )
+;  (delay expr) )
+
+;(define unpack force);
+
+;(define (prod x y)
+;(* (pack x) (pack y)))
+
+;;fluzuri : sunt structuri caer se extind la cerere
+
+;(interval 1  10)
+
+;; vrem sa cotnruim o lista acre sa se poata extidne la cerere
+;(cons x tail)
+
+;daca dacm delay pe x tail se va evluad e ma multe ori => facem delay pe tail
+;string-cons
+;(cons x (pack t) )
+
+;string-car : car
+;string-cdr : (unpack (cdr ))
+
+;;constructia si utilizarea se intreapatrund, dar la nivel inalt ele sunt seaprate
+;(fold + 0 (filter even? (1 . #<p> ) ) ) ;intervalul e 1 100, e un fel de filter string
+;=> (cons (string-car s ) (string-filter ( string-cdr s )) ) ; din (string-cdr = > (cons 2 .#<p> )
+;; nu se construieste efectiv nicio lista
+;;(define-syntax-rule (stram-cons head tail)
+;;
+;;(cons head (pack tail)) ;;ce e inspatele functiilor astora
+
+;(define ones (stream-cons 1 ones) );;crapa cu cons clasic, udnefined, dar cum nu e imediat evaluat (pt ca e packet)
+
+
+;(1. #promise)
+
+;n evalurea aplicativa se creeaza deseori bucle infinite, daca apelez aceeasi functie intr.o functie cu un factor constant
+; si nici nu pot retine grafuri
+
+
+;un fel de evaloare lenes:
+
+(define sum
+  ( λ (x y)
+     (λ ()
+     (+ x y))))
+
+;;(sum 1 2) vs ((sum 1 2))
+;;vs
+(define sum2
+  (λ (x y )
+    (delay (+ x y))))
+
+(sum2 1 2)
+
+
+;generator
+(define make_ones
+  (lambda ()
+    (cons 1 (delay (make_ones)))))
+ 
+;sirul de valori 1
+
+(define ones_stream (make_ones))
+
+
+
+;extragerea primelor n elemente din sir
+(define take
+  (lambda (n stream)
+    (if (zero? n) '()
+        (cons (car stream) (take (- n 1) (force (cdr stream)))))))
+ 
+; testare
+(take 4 ones_stream); va afisa (1 1 1 1 1)
+
+(define succ
+  (lambda (n)
+    (+ n 1) ) )
+
+(define make_naturals
+  (λ (k)
+    (cons k (delay (λ () (make_naturals (succ k))))))))
+
+(define natural_stream (make_naturals 0))
+natural_stream 
+(take 4 natural_stream)

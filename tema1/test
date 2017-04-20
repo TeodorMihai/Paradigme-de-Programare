@@ -1,0 +1,7 @@
+#lang racket
+;; (struct node ( x left right) )
+;; definim un nod ca o lista cu 3 argumente, primul este valoarea, al doilea este nodul stanga, apoit nodul dreapta
+
+(< 2 3)
+
+(and (< 2 3) #t #t #t)

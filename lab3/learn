@@ -1,0 +1,16 @@
+(map list '(1 2 3) '(4 5 6))    => aplica functia pe fiecare element , primul din fiecare lista, 
+al doilea din fiecare =>'((1 4), (2 5) (3 6) )
+
+(apply ...) iau ultimul argument si ii scot parantezele
+(apply map + ('(1 2) (10 15))) =>   (map + '(1 2) '(10 15) ) => (11 17) apoi se apica map simplu
+
+
+trebuie sa combin liniile cu acelasi indice din matrice:
+(map lambda( l1 l2) ...) m1 m2) fiecare linie din matrice face ceva cu ea 
+
+treb sa fac ceva cu fiecare linie din matrice 
+(map lambda(l1) ce face m)
+
+trebuie sa combin liniile aceleasi M intre ele (element cu ele)
+
+(apply map ... m)

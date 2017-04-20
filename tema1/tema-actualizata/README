@@ -1,0 +1,128 @@
+Autor: Cotet Teodor Mihai
+
+Task pregatitor:
+
+	Retin arborele ca o lista cu 3 argumente: primul este arborele left, 
+	al doilea arborele right si al treilea valoarea aflata in nodul respectiv.
+	De aici reies get-left, get-right , get-value implementate cu car si cdr.
+	empty tree este lista vida.
+
+	pentru minimum si maximum: iau valoarea din nodul "Cel mai din stanga", respectiv
+	"cel mai din dreapta".(ma duc in drepta / stanga pana nu mai pot, atunci ma opresc).
+
+	height: recursiv, inaltimea celui mai adanc subarbore + 1 (nodul curent)
+
+	inorder: pe sistemul stanga-radacina-dreapta, aceasta fiind ordinea in care construiesc
+	lista parcurgerii inordine
+	
+	preorder: la fel doar ca inorder doar ca voi construi lista astfel: radacina-stanga-dreapta
+	
+	potorder: stanga-dreapta-radacina
+
+	get-succesor:  retin cel mai mic numar mai mare ca value, pe drumul meu, cand gasesc nodul cu value,
+	 	 returnez minimul dintre ce am gasit pe lant pana la fiu si nodul candidat de la fiu in jos
+		 (cel mai mic numar continut in arborele drerapta al nodului cu value
+		 functioneaza si daca value nu este in arbore, daca nu gaseste nimic intoarce null
+
+	get-predecessor: asemanator cu la successor, retin candidatul pana dau de nodul cu value, dar apoi
+	 				 returnez maximul din fiul stang
+
+Task 1:
+
+	contains: caut nodul intr-un mod clasic pentru un arbore binar de cautare. 
+			  returnez fals daca nu-l gasesc
+	insert:  ma duc in stanga sau in dreapta in functie de unde vreau sa inserez
+			 la fiecare pas refac arborele cu noul subarbore pe care il modific prin 
+			 inserarea unui nod astfel incat nu apar efecte laterale (nu schimb
+			 structura niciunui nod, ci creez altele)
+			 daca valoarea se afla deja in arbore nu o mai inserez
+			 am grija ca nodul in care ma afla sa fie balansat (AVL), aplicand functia balance
+			 tot timul pe noul subarbore construit, astfel prin aceasta strategie de tip
+			 bottom-up arborele rezultat in urma inserarii va fi de tip AVL.
+
+	balance: ma folosesc de functiie roatate-left si rotate-right 
+			rotate-left:  urca nodul right in locul nodului curent, nodul curent devine fiul stanga 
+			  			  al nodului right
+						  rezulatul este micsorarea diferentei intre subarborii right si left, 
+						  right scanzand cu 1
+						  nu trebuie ca tree sa fie null, si nici fiul dreapta al lui tree sa fie null 
+
+			roate-right: oglinditul lui rotate-right
+
+			Incerc sa aplic aceste functii doar cand diferenta intre inaltimile subarborilor este mai 
+			mare ca 1. Aparent este nevoie de mai mult de o rotatie pentru ca practic la rotatiile astea
+			schimb un subarbore cu altul. Doar ca la un moment dat am 2 optiuni. pot pune in locul unui 
+			subarbore ori un fiu stanga ori un fiu dreapta al unui nod. Ideea ar fi sa aleg subarborele 
+			care cauzeaza dezechilbru, dar eu nu pot alege pentru ca nu as mai pastra propitetatea de
+			baza a arborilor binari de cautare. Atunci aplic o rotatie pe cei doi subarbori ai si 
+			parintele lor.
+
+	union: parcurg arborele tree1 si bag daca e cazul valoarea in arborele tree2, in tree2 o sa 
+		   am arborele rezultat
+
+	intersection: am o functie cu 3 arbori, parcurg arborele 1, daca valoarea din nodul curent se gaseste 
+					si in tree2 insemna ca se gaseste in ambii arbori => bag valoarea in cel de-al 
+					treilea arbore, pe care il si returnez la final
+
+	complements: tot cu 3 arbori . inserez in al treilea arbore daca doar sa afla in primul
+				 si nu se afla in al doilea, sau viceversa 
+
+	remove: asemanator cu insert, reconstruiesc arborele, nu-l modific, pastrand
+			bootom-up structura unui AVL. Am cazurile clasice de remove
+			intr-un arbore binar de cautoare. Mi-am mai definit o functie remove-max
+			care.mi intoarce arborele fara cel mai mare element (pe care il pun practic in locul 
+			nodului sters de mine)
+
+Task 2:
+
+	k-subsets: Am facut doua metode: una care lucreaza direct pe erbori
+			   si genereaza direct numai submultimi de k elemente
+			   si una care nu lucreaza pe arbori si genereaza toate submultimile 
+			   posibile, iar apoi le filtreaza. Evident prima este mai buna,
+			   dar mi-a fost frica sa nu imi iau copiat intrucat m-am inspirat un pic de 
+			   pe net cand am scrs-o (link la final).
+
+	zig-zag-subsets: oricare ar fi o multime se pot gasi permutari ale ei astfel 
+	                 incat sa respecte propietatea de zig-zag, asadar numarul de elementele al submultimilor mele va fie gal cu numarul de elemente al multimii.
+	                 Asadar initial generez toate permutarile multimii mele cu generate-perm (aici nu mai 
+	                 lucrez pe arbore). Fac acest lucru folosind o alta functie ajutatoarea insert-list 
+	                 care returneaza toate listele in functie de cum pot baga un element intr-o alta 
+	                 lista.
+	                 La fiecare pas am mai multe liste, iar pentru fiecare lista iau toate aceste incerc 
+	                 sa bag elementul curent, creand astfel mai multe liste, la final punandu-le pe toate 
+	                 intr-o noua lista.
+	                 Dupa care imi definesc un predicat acre verifica daca o lista respecta una dintre 
+	                 cele doua propietati de zig-zag si filtrez cu ajutorul ei din toate permutarile 
+	                 generate doar acele cu propietatea dorita. 
+
+Bonus: 
+
+	parser: pentru a putea construi arborele de evaluare in mod corect am nevoie ca expresia mea sa 
+		    contina numai liste cu 3 elemente de forma: operand operator operand. Asadar ianinte sa fac 
+		    parser (adica sa construiesc arborele) ma asigur ca se respecta acest format folosind functia
+		     make-lists.
+		    Aceasta functie se bazeaza pe urmatorea idee: intr-o expresia doar cu operanzi si operatorii:
+		    - + / * (adica doar cu 2 niveluri de prioritate) pot evalua unul dintre primii doi operatori 
+		    pentru ca al nu poate exsta un al trilea operator cu prioritatea mai mare strict ca celor doi 
+		    astfel incat sa ma oblige sa-l evaluez pe el primul(prespun ca se poate generaliza prin 
+		    inductie propiteta asta la toata lista)
+		    Asadar folosind propietea asta iau primele 5 elemetne din lista (daca exista) si "parantezez" 
+		    aka creez o noua lista din primele 3 sau din ultimele 3, in functie de prioritatea 
+		    operatorului. Apoi aplic parserul care creeaza arborele recursiv, ma opresc cand sunt intr-o 
+		    frunza. 
+
+	eval:  Pentru evaluarea e asemanator, cand ajung la un nod cu 2 frunze evaluez expresia
+		   si intorc rezulatul, le adun, scad etc dupa caz. evaluarea bottom-up.
+
+Bibliografie: (doar problem 1, pe problmel 2 nu nici m-am uitat)
+(1)  https://see.stanford.edu/materials/icsppcs107/33S-Section-Solution.pdf
+
+
+
+
+
+
+
+
+
+

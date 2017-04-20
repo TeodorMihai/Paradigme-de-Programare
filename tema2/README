@@ -1,0 +1,36 @@
+Nume: Cotet Teodor Mihai 323 CA 
+
+Task1:
+	neighborsOf: aplic un filter ca sa iau doar "perechile" care contin nodul meu, apoi le formatez cu un map fst
+	randomPath: imi fac o functie care imi ia o stare un generator si pe baza genratorului intoarce urmatoarea stare
+				(mai intoarce si un generator acum mi-am dat seama ca e degeaba)
+	terminatePath: folosesc takeWhile pentru ca am flux infint , de asemenea mai dau un find 
+					pentru prima stare terminata ca sa o adaug si pe ea (takeWhile nu mi-o pune in lista)
+	randomPaths: la fel in fac o functie care sa-mi faciliteze apelarea lui iterate (makeGenAndPath) - numele e sugestiv
+Task 2:
+	reinforcements: hardcodare 
+	initialEstimation: am incercat sa-l fac cat mai putin hardocdat
+	values: aplic un fmap (pentru ca e array) si imi iau ce-mi trebuie(valorile)
+	showEstimation: mi-am facut 3 functii ajutatoare de print, pentru final linie, , final de tot, 
+					si element din mijlocul matricii, ele returneaza un string. Apoi imi fac o functie care primeste
+					2 parametrii (linie si coloana) si parcurge matricea in ordinea dorita afisarii, in timp ce concaterneaza rezulatulele
+					stringului pentru afisare
+	updateEstimation: asta a fost cea mai interesanta functie. Implementarea mea se bazeaza pe recursivitate pe coada
+					(tin vectorul de estimari si il modific in timp ce parcurg lista). Cam asta ar fi tot la implementarea mea,
+					in schimb am remarcat ceva foarte dubios care mergea la colegii mei despre functia acc.
+					Eu daca aplic acc practic trebuia sa iau 2 valori din lista de estimari (estimarea starii curente si a celei viitoare),
+					iar ambele aceste valori trebuie sa fie actualizate (daca am pathul: 1->2->1->2) cand ajung in al doilea 1 trebuie
+					sa folosesc valoarea nou calculata pentru 2, iar acest lucru pare imposibil pentru ca accum te lasa sa accesezi doar
+					un element din array. (am vazut ca unii colegi de-ai mei cauta efectiv starile, dar e ciudat pentru ca nu le cauta
+					in array actualizat, ci in cel primit initial (primit ca argument in functie) si totusi le trec testele.
+					Eu nu am facut cu accum pentru ca nu am inteles exact cum functioneaza.
+	estimations: destul de clasic, am aplicat mapAccumL, arunc acumulatorul la final
+	estimate: calculea toate estimarile pana la rangul respectiv, apoi o iau si retunrez pe ultima
+	bestNeighborOf : parcurg vecinii cu un fold si retin indexul celui mai mare
+	bestPath: ca sa pot sa dau starea la iterate am inversat parametrii primiti ai functiei bestNeighborOf (inversBestNeighborsOf )
+
+Task 3: Memoizare: Imi creez functia memoizata po, si aplic map ca sa calculez toate valorile (ca flux),
+			mai aplic apoi un map ca sa pot inmultesc si cu scaleFactor fiecare element din flux.
+			In teorie aceasta solutie este mai eficienta pentru ca daca am nevoie doar de elementul 5 nu mai calculeaza toate elementele
+			1, 2, 3, 4, insa asta nu se va intampla niciodata, pentru ca nu pot ajunge intr-un patratat de x ori
+			fara ca mai intai sa ajung in el de x - 1 ori. 

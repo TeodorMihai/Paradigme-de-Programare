@@ -1,0 +1,5 @@
+#lang racket
+(define add-curry
+  (lambda (x)
+    (lambda (y)
+      (+ x y))))

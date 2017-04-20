@@ -1,0 +1,4 @@
+#lang racket
+(struct node ( x left right) )
+
+(define tree (node 1 (node 2 null null) (node 3 null null) ) ) 

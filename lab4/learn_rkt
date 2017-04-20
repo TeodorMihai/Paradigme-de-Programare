@@ -1,0 +1,147 @@
+#lang racket
+;;te za church-turing tot ce se poate calcula pe o masina e echivalent cu ce se poate calcula cu creionul si hartia
+;;exista vreun model superior de calcul? nu cu masini
+
+;;(λ x. x y) => se aplica functia λ x . x asupra parametrului liber y sau actual
+;; se identifica parametrul formal x(cel din λ x), se vede corpul functiei unde se inlocuiesc toate aparaitile cu y
+
+;; functii care transfroam intrarile in iesiri, fara atribuiri => poti testa fiecare functie in parte, se diminueaza
+;; importanta ordinii de evaluare, nu mai ai stari
+
+;; (0 1 2) => eroare 0 nu este operator =>
+;; ( quote (0 1 2) ) sau '(0 1 2)
+
+;;(cons x y)       introduce elementul x in capul(head) listei y => (x y)
+
+
+;;tipare = modalitatea de definire vericiare , manipulare a tipurilor unui limbaj
+
+;;tipare tare(verificare rigia nu emrge sa combini tipuri diferite de date) vs slaba, dinamica vs static
+
+;;tipare dinamica: verificare in momentul APLICARII unui operator predefinit, nu inainte de aplicare!!
+
+;;(+ 1 (if codition 2 "OK") ) da eroare doar daca se retunreaza OK (nu merge adunat cu un string, altfel works like a charm)
+
+;; racket: evaluare bazata pe substitutia textuala, tipare dinamica si tare(nu poti aduna string cu numar)
+
+;;spatiul ocupat pe stiva: theta de adancimea arborelui
+
+;; unoeri este imposibila trecerea la tail-recursion:
+
+;;ex:(define (f x) (if (zero? x) 0 (g (f (- x 1) ) ) ) ) => compoartamentul lui g depinde de parametru
+
+;; asocierea dreapta vs stanga, la dreapta se consuma nr elemente din A, la stanga nr de alemente listelor concaternate anterior
+;; append l1 l2 => face l1 operatii, nerecomandat
+
+;;ex ++ = concaternare
+;;dreapta: A++(B++(C++...)
+;; stanga (...(...++A)++B)++C)
+
+
+;;statul dinamic al functiei, ptand fi crate la executie, trimise ca parametrii latei functii, returnate de functii, evaluate la ele insele
+;;evaluate la ele insele (cons + '(1 2) ) => (#<procedure:+> 1 2)
+(define adunare (λ (x y) (+ x y) ) ) ;;legare variabila adunare la functie anonima
+
+(adunare 3 4)
+
+(define (adunare2 x y) (+ x y) ) ;;legarea variabilei adunare 2 la o functie anonima
+
+(adunare2 2 3)
+
+;;aplic aceeasi functie pe o lista
+
+(define (mult x)
+  (* 10 x) )
+
+(define (multq q)
+     (λ(x) (* q x) ) )
+
+(define (map f L)
+  (if (null? L)
+      '()
+      (cons (f (car L) ) (map f (cdr L) ) )
+       ))
+
+(map mult '(1 2 3 4) )
+(map (multq 2) '(1 2 3 4) )
+(map (λ (x) (* 3 x) ) '(1 2 3 4) )
+
+;;functionala = primeste ca parametru (si) o functie, sau intoarce una
+
+;; (λx.λcons.x cons) => λz.cons, daca numele coincide cu cel al aparititiei libere se redenumeste,(NU DA λcons.cons) => posibilitatea reprezentarii tuturor valorilor uzuale prin functii=> date ca functii
+
+
+
+;; scriu o functie si o si apelez
+
+( (λ (a b) (+ a b)) 1 2)
+
+(define a 10)
+
+(let ( (a 1) (b (+ a 1) ) ) ; ; aici suntem in zona de definiții, nu în corpul let-ului => a e legat la 10
+  (cons a b) )              ;; în corpul let-ului este vizibilă legarea lui a la 1
+
+
+;; rescirs cu lambda
+( (λ (a b) (cons a b) ) 1 (+ a 1) )    ;;toata diferenta e ca apelez functia folosind SI valori definite ca parametrii
+
+
+;; a si b apar legate: 1) dupa orice lambda si in corpul functiei, doar 1 si 2 sunt variabile libere
+;; (λ x .(x λ x. x) x)   doar ultimul x e liber
+(define x 2)
+
+( (λ (x) x ) 7)
+
+;;( (λ (x) (list x λ (x)  x) )  x )
+
+(let ( (a 1) )             ;; urmeaza expresia aka corpul functiei
+  (let ( (f (λ () (print a) ) ) )  ;;urmeaza expresia aka corpul functiei
+    (let ( (a 2) )                 ;; urmeaza corpul functiei
+      (f) ) ) ) 
+
+
+
+(let* ( (a 1) (b (+ a 1) ) )    ;;; în momentul definirii lui b, este vizbilă legarea lui a la 1
+  (cons a b) )
+
+
+
+;(letrec ( (a b) (b 1) )             ; aici e o problema ca nu stim cine e b, epntru ca trebuie sa evaluam valoarea lui a la momentul definirii lui
+;  (cons a b) )                      ; o sa dea eroare
+
+(letrec 
+    ( (even-length? 
+      (lambda (L)                    ; even-length? este o închidere funcțională
+        (if (null? L)                ; deci corpul funcției nu este evaluat la
+            #t                       ; momentul definirii ei
+            (odd-length? (cdr L))))) ; deci nu e o problemă că încă nu știm cine e odd-length?
+     (odd-length? 
+      (lambda (L) 
+        (if (null? L)
+            #f
+            (even-length? (cdr L))))) )
+  (even-length? '(1 2 3 4 5 6)))     ; în acest moment deja ambele funcții au fost definite
+
+(define (interval a b step)
+  (let iter ( (b b) (result '() ) )
+    (if (> a b)                               ; aici e vizibil b-ul parametru al lui iter, nu cel al functiei interval
+        result
+        (iter (- b step) (cons b result))))
+  )
+
+(interval 2 10 2)
+
+;;Spre deosebire de legarea statică, în cazul legării dinamice domeniul
+;;de vizibilitate al unei variabile este controlat dinamic, în funcție de timp.
+;;Legarea dinamică se mai numește și dynamic scoping.
+
+(define t 2)
+;;(define t 3)
+
+;; Un dezavantaj al legării dinamice este pierderea transparenței referențiale (același apel - (f 2) în exemplul nostru - întoarce două valori diferite). 
+;;  Dar ce valoare produce evaluarea unei λ-expresii? Evaluarea oricărei λ-expresii produce o închidere funcțională.
+
+;;  O închidere funcțională este o pereche între:
+
+;;    textul λ-expresiei ((lambda (x) (+ x a)) pe exemplul nostru)
+;;    contextul computațional în punctul de definire a λ-expresiei ((a 1) pe exemplul nostru)
